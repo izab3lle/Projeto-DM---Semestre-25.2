@@ -25,8 +25,8 @@ sealed class BottomNavItem(
     val icon: ImageVector,
     val route: Route)
 {
-    data object HomeButton
+    data object UserGroupsButton
         : BottomNavItem("Seus Grupos", Icons.Default.Face, Route.UserGroups)
-    data object ListButton
+    data object FindGroupsButton
         : BottomNavItem("Encontrar Grupos", Icons.Default.AddCircle, Route.FindGroups)
 }
