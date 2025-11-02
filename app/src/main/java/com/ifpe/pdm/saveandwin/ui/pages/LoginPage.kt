@@ -1,4 +1,4 @@
-package com.ifpe.pdm.saveandwin.ui.theme.pages
+package com.ifpe.pdm.saveandwin.ui.pages
 
 import android.app.Activity
 import android.content.Intent
