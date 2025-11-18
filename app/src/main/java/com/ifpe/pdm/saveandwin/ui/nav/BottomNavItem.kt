@@ -3,15 +3,19 @@ package com.ifpe.pdm.saveandwin.ui.nav
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import com.ifpe.pdm.saveandwin.R
 import kotlinx.serialization.Serializable
+
+val groupsIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.group)
+
+val findGroupsIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.group)
 
 sealed interface Route {
     @Serializable
@@ -22,11 +26,11 @@ sealed interface Route {
 
 sealed class BottomNavItem(
     val title: String,
-    val icon: ImageVector,
+    val icon: Int,
     val route: Route)
 {
     data object UserGroupsButton
-        : BottomNavItem("Seus Grupos", Icons.Default.Face, Route.UserGroups)
+        : BottomNavItem("Seus Grupos", R.drawable.group, Route.UserGroups)
     data object FindGroupsButton
-        : BottomNavItem("Encontrar Grupos", Icons.Default.AddCircle, Route.FindGroups)
+        : BottomNavItem("Encontrar Grupos", R.drawable.outline_group_search_24, Route.FindGroups)
 }
