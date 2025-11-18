@@ -18,10 +18,9 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel: LoginViewModel by viewModels()
             SaveAndWinTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginPage(Modifier.padding(innerPadding), viewModel)
+                    LoginPage(Modifier.padding(innerPadding))
                 }
             }
         }
