@@ -8,7 +8,9 @@ data class Group(
     var code: String,
     var name: String,
     var creator: User,
-    var created: LocalDateTime
+    var created: LocalDateTime,
+    var description: String?,
+    var image: Int
 ) {
     var members: List<User> = mutableListOf()
     var posts: List<Post> = mutableListOf()
