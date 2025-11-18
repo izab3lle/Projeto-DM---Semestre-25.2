@@ -10,18 +10,9 @@ import java.time.LocalDateTime
 
 class MainViewModel : ViewModel() {
     private val _users = getUsersList().toMutableStateList()
-    private val _groups = getGroupsList(users).toMutableStateList()
 
-    val groups
-        get() = _groups.toList()
     val users
         get() = _users.toList()
-
-    private fun getGroupsList(users: List<User>) = List(5) { i ->
-        Group(code="$i",
-            name="Grupo $i",
-            creator = users[i], created = LocalDateTime.now())
-    }
 
     private fun getUsersList() = List(5) { i ->
         User(username = "User$i",
