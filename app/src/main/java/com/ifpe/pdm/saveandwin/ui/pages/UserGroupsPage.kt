@@ -3,6 +3,7 @@ package com.ifpe.pdm.saveandwin.ui.pages
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ifpe.pdm.saveandwin.model.Group
+import com.ifpe.pdm.saveandwin.ui.nav.Route
 import com.ifpe.pdm.saveandwin.ui.theme.GrayDescriptionColor
 import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
 import com.ifpe.pdm.saveandwin.ui.theme.LightGrayField
@@ -45,7 +48,11 @@ import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 import kotlin.collections.remove
 
 @Composable
-fun UserGroupsPage(modifier: Modifier = Modifier.Companion, viewModel: GroupPageViewModel) {
+fun UserGroupsPage(
+    modifier: Modifier = Modifier.Companion,
+    navController: NavController,
+    viewModel: GroupPageViewModel
+) {
     val groups = viewModel.groups
 
     Column(
@@ -71,7 +78,21 @@ fun UserGroupsPage(modifier: Modifier = Modifier.Companion, viewModel: GroupPage
             }
 
             items(groups, key = { it.name }) { group ->
-                GroupCard(group)
+                GroupCard(
+                    group = group,
+                    onClick = {
+                        viewModel.selectedGroup = group
+                        Log.i("GRUPO", "Grupo selecionado ${group.name}")
+                        navController.navigate(Route.GroupPage) {
+                            navController.graph.startDestinationRoute?.let {
+                                popUpTo(it) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                            }
+                            launchSingleTop = true
+                        }
+                    })
                 Spacer(Modifier.size(15.dp))
             }
         }
@@ -79,7 +100,7 @@ fun UserGroupsPage(modifier: Modifier = Modifier.Companion, viewModel: GroupPage
 }
 
 @Composable
-fun GroupCard(group: Group) {
+fun GroupCard(group: Group, onClick: () -> Unit) {
     val titleSize = 18.sp
     val contentSize = 14.sp
     ElevatedCard(
@@ -89,7 +110,8 @@ fun GroupCard(group: Group) {
         modifier = Modifier.fillMaxWidth(),
         colors = elevatedCardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = onClick
     ) {
         Box(
             modifier = Modifier

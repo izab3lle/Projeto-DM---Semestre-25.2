@@ -1,10 +1,8 @@
-package com.ifpe.pdm.saveandwin.ui.nav
+package com.ifpe.pdm.saveandwin.ui.nav.bottom
 
 import androidx.compose.foundation.Image
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,10 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.ifpe.pdm.saveandwin.ui.theme.GrayDescriptionColor
-import com.ifpe.pdm.saveandwin.ui.theme.GreenFocusedField
-import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
-import com.ifpe.pdm.saveandwin.ui.theme.GreenSelected
+import com.ifpe.pdm.saveandwin.ui.theme.DarkGreen
 
 @Composable
 fun BottomNavBar(
@@ -24,7 +19,7 @@ fun BottomNavBar(
     items : List<BottomNavItem>
 ) {
     NavigationBar(
-        contentColor = Color.Black,
+        contentColor = DarkGreen,
         containerColor = Color.White,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -47,15 +42,6 @@ fun BottomNavBar(
                         launchSingleTop = true
                     }
                 },
-                colors = NavigationBarItemColors(
-                    unselectedIconColor = GreenFocusedField,
-                    selectedIconColor = GreenFocusedField,
-                    selectedTextColor = GreenFocusedField,
-                    selectedIndicatorColor = GreenSW,
-                    unselectedTextColor = GreenFocusedField,
-                    disabledIconColor = GrayDescriptionColor,
-                    disabledTextColor = GrayDescriptionColor
-                )
             )
         }
     }

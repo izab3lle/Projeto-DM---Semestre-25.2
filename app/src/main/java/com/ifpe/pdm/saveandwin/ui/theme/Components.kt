@@ -32,7 +32,7 @@ fun DataStringField (
         onValueChange = onValueChange,
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = GreenFocusedField,
+            focusedIndicatorColor = DarkGreen,
         )
     )
 }
@@ -52,7 +52,7 @@ fun PasswordField(
         visualTransformation = PasswordVisualTransformation(),
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = GreenFocusedField,
+            focusedIndicatorColor = DarkGreen,
         )
     )
 }

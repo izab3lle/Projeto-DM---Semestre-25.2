@@ -17,6 +17,7 @@ class GroupPageViewModel : ViewModel() {
         get() = _groups.toList()
     val users
         get() = _users.toList()
+    var selectedGroup: Group? = null
 
     private fun getGroupsList(users: List<User>): SnapshotStateList<Group> {
         val images = listOf(
