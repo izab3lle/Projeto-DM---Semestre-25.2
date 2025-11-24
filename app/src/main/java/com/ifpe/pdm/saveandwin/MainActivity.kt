@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -22,20 +23,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ifpe.pdm.saveandwin.ui.nav.bottom.BottomNavBar
-import com.ifpe.pdm.saveandwin.ui.nav.bottom.BottomNavItem
+import com.ifpe.pdm.saveandwin.ui.dialogs.CreatePostDialog
 import com.ifpe.pdm.saveandwin.ui.nav.drawer.DrawerNavItem
 import com.ifpe.pdm.saveandwin.ui.nav.MainNavHost
+import com.ifpe.pdm.saveandwin.ui.nav.Route
 import com.ifpe.pdm.saveandwin.ui.nav.drawer.NavDrawer
 import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
 import com.ifpe.pdm.saveandwin.ui.theme.SaveAndWinTheme
-import com.ifpe.pdm.saveandwin.viewmodel.GroupPageViewModel
 import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -46,11 +53,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val viewModel : MainViewModel by viewModels()   // State Hoisting - Deve ser declaraod no topo, para não ser reinicializado
-            val groupPageViewModel : GroupPageViewModel by viewModels()
+            val currentRoute = navController.currentBackStackEntryAsState()
+            val onCreateGroupPage = currentRoute.value?.destination?.hasRoute(Route.CreateGroup::class) == true
+            var showPostDialog by remember { mutableStateOf(false) }
+
+            // Drawer
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
 
             SaveAndWinTheme {
+                if(showPostDialog) {
+                    val groupNames: MutableList<String> = mutableListOf()
+                    viewModel.userGroups.forEach { group ->
+                        groupNames.add(group.name)
+                    }
+
+                    CreatePostDialog(
+                        onDismiss = { showPostDialog = false },
+                        onConfirm = { showPostDialog = false },
+                        groupsList = groupNames,
+                        viewModel = viewModel
+                    )
+                }
+
                 NavDrawer(
                     drawerState = drawerState,
                     navController = navController,
@@ -67,23 +92,29 @@ class MainActivity : ComponentActivity() {
                             @OptIn(ExperimentalMaterial3Api::class)
                             CenterAlignedTopAppBar(
                                 title = {
-                                    Image(
-                                        painter = painterResource(R.drawable.money_logo),
-                                        contentDescription = "Logo Save & Win",
-                                        modifier = Modifier.size(40.dp)
-                                    )
-                                        },
+                                    if(!onCreateGroupPage) {
+                                        Image(
+                                            painter = painterResource(R.drawable.money_logo),
+                                            contentDescription = "Logo Save & Win",
+                                            modifier = Modifier.size(40.dp)
+                                        )
+                                    } },
                                 navigationIcon = {
+                                    val icon = if(onCreateGroupPage) Icons.AutoMirrored.Filled.KeyboardArrowLeft else Icons.Default.Menu
                                     IconButton(onClick = {
-                                        scope.launch {
-                                            if (drawerState.isClosed) {
-                                                drawerState.open()
-                                            } else {
-                                                drawerState.close()
+                                        if(onCreateGroupPage) {
+                                            navController.popBackStack()
+                                        } else {
+                                            scope.launch {
+                                                if (drawerState.isClosed) {
+                                                    drawerState.open()
+                                                } else {
+                                                    drawerState.close()
+                                                }
                                             }
                                         }
                                     }) {
-                                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+                                        Icon(icon, contentDescription = "Menu")
                                     }
                                 },
                                 colors = TopAppBarColors(
@@ -96,20 +127,17 @@ class MainActivity : ComponentActivity() {
                             )
                         },
                         floatingActionButton = {
-                            FloatingActionButton(
-                                onClick = { },
-                                containerColor = GreenSW,
-                                shape = CircleShape
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = "Adicionar")
+                            if(!onCreateGroupPage) {
+                                FloatingActionButton( onClick = { showPostDialog = true }, containerColor = GreenSW, shape = CircleShape) {
+                                    Icon(Icons.Default.Add, contentDescription = "Adicionar")
+                                }
                             }
                         }
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {
                             MainNavHost(
                                 navController = navController,
-                                viewModel = viewModel,
-                                groupPageViewModel = groupPageViewModel
+                                viewModel = viewModel
                             )
                         }
                     }
