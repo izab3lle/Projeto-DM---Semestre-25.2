@@ -104,10 +104,10 @@ fun LoginPage(modifier: Modifier = Modifier) {
             )
             Spacer(Modifier.size(25.dp))
 
-            DataStringField(email, "Insira seu email") {email = it}
+            DataStringField(value = email, text =  "Insira seu email") {email = it}
             Spacer(Modifier.size(3.dp))
 
-            PasswordField(password, "Insira sua senha") {password = it}
+            PasswordField(value = password, text = "Insira sua senha") {password = it}
             Spacer(Modifier.size(10.dp))
 
             DefaultButton(

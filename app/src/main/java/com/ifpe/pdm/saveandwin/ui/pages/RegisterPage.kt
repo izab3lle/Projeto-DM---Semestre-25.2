@@ -71,10 +71,10 @@ fun RegisterPage(modifier: Modifier = Modifier.Companion) {
         )
         Spacer(modifier = Modifier.Companion.size(titleSpacing))
 
-        DataStringField(username, "Digite seu nome de usuário") { username = it }
+        DataStringField(value = username, text = "Digite seu nome de usuário") { username = it }
         Spacer(modifier = Modifier.Companion.size(fieldSpacing))
 
-        DataStringField(email, "Digite seu email") { email = it }
+        DataStringField(value = email, text = "Digite seu email") { email = it }
         Spacer(modifier = Modifier.Companion.size(fieldSpacing))
 
         PasswordField(password, "Digite sua senha") { password = it }
