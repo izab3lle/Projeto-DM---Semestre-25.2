@@ -10,20 +10,18 @@ import com.ifpe.pdm.saveandwin.ui.pages.FindGroupsPage
 import com.ifpe.pdm.saveandwin.ui.pages.GroupPage
 import com.ifpe.pdm.saveandwin.ui.pages.UserGroupsPage
 import com.ifpe.pdm.saveandwin.ui.pages.UserProfilePage
-import com.ifpe.pdm.saveandwin.viewmodel.GroupPageViewModel
 import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    viewModel : MainViewModel,
-    groupPageViewModel: GroupPageViewModel
+    viewModel : MainViewModel
 ) {
     NavHost(navController, startDestination = Route.UserGroups) {
-        composable<Route.UserGroups> { UserGroupsPage(viewModel = groupPageViewModel, navController = navController) }
+        composable<Route.UserGroups> { UserGroupsPage(viewModel = viewModel, navController = navController) }
         composable<Route.FindGroups> { FindGroupsPage(viewModel = viewModel) }
-        composable<Route.UserProfile> { UserProfilePage(viewModel = viewModel) }
-        composable<Route.GroupPage> { GroupPage(group = groupPageViewModel.selectedGroup) }
+        composable<Route.UserProfile> { UserProfilePage(viewModel = viewModel, navController) }
+        composable<Route.GroupPage> { GroupPage(group = viewModel.selectedGroup) }
         composable<Route.CreateGroup> { CreateGroupPage(viewModel = viewModel) }
         composable<Route.Notifications> { Text("Notificações") }
     }
