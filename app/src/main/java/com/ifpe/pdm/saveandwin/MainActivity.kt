@@ -63,15 +63,10 @@ class MainActivity : ComponentActivity() {
 
             SaveAndWinTheme {
                 if(showPostDialog) {
-                    val groupNames: MutableList<String> = mutableListOf()
-                    viewModel.userGroups.forEach { group ->
-                        groupNames.add(group.name)
-                    }
-
                     CreatePostDialog(
                         onDismiss = { showPostDialog = false },
                         onConfirm = { showPostDialog = false },
-                        groupsList = groupNames,
+                        groupsList = viewModel.userGroups,
                         viewModel = viewModel
                     )
                 }
@@ -129,7 +124,7 @@ class MainActivity : ComponentActivity() {
                         floatingActionButton = {
                             if(!onCreateGroupPage) {
                                 FloatingActionButton( onClick = { showPostDialog = true }, containerColor = GreenSW, shape = CircleShape) {
-                                    Icon(Icons.Default.Add, contentDescription = "Adicionar")
+                                    Icon(Icons.Default.Add, contentDescription = "Adicionar", tint = Color.White)
                                 }
                             }
                         }
