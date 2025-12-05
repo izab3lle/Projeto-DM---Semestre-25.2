@@ -1,6 +1,7 @@
 package com.ifpe.pdm.saveandwin.ui.theme
 
 
+import android.app.Dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -117,6 +118,26 @@ fun DefaultIconButton(
         Icon(painter = painterResource(icon), contentDescription = iconDescription, modifier = Modifier.padding(end = 16.dp))
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+@Composable
+fun DialogButton(
+    text: String,
+    color: Color = BlackButton,
+    onClick: () -> Unit,
+    enabled: Boolean = true
+) {
+    Button(
+        modifier = Modifier
+            .height(40.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color,
+            contentColor = Color.White
+        ),
+        onClick = onClick,
+        enabled = enabled
+    ) { Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold) }
 }
 
 @Composable
