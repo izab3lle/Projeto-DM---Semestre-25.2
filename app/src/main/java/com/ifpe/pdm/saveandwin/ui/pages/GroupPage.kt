@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ifpe.pdm.saveandwin.R
 import com.ifpe.pdm.saveandwin.model.Group
@@ -65,17 +66,44 @@ import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
 import com.ifpe.pdm.saveandwin.ui.theme.LightGreenBackground
 import com.ifpe.pdm.saveandwin.ui.theme.MintGreen
 import com.ifpe.pdm.saveandwin.ui.theme.SectionCard
+import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun GroupPage(group: Group?) {
+fun GroupPage(viewModel: MainViewModel, navController: NavController) {
+    val group = viewModel.selectedGroup
+
+    val onClick: (Post) -> Unit = { post ->
+        viewModel.selectedPost = post
+        navController.navigate(Route.PostPage) {
+            navController.graph.route?.let {
+                popUpTo(it) {
+                    saveState = true
+                }
+                restoreState = true
+            }
+            launchSingleTop = true
+        }
+    }
+
     Column(Modifier.background(LightGreenBackground)) {
         GroupHeader(group)
         Spacer(Modifier.size(15.dp))
         MembersBar(group?.members ?: listOf())
         Spacer(Modifier.size(15.dp))
-        PostsList(group?.posts ?: listOf())
+        PostsList(group?.posts ?: listOf(), { post ->
+            viewModel.selectedPost = post
+            navController.navigate(Route.PostPage) {
+                navController.graph.route?.let {
+                    popUpTo(it) {
+                        saveState = true
+                    }
+                    restoreState = true
+                }
+                launchSingleTop = true
+            }
+        })
     }
 }
 
@@ -125,19 +153,21 @@ fun GroupHeader(group: Group?) {
 @Composable
 fun MembersBar(members: List<User>) {
     var showDialog by remember { mutableStateOf(false) }
+
     if(showDialog) {
         GroupMembersDialog({ showDialog = false }, members)
     }
 
     SectionCard("Participantes", true, "Ver todos", members.size, onClickMore = { showDialog = true} ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            for(i in 0 .. 5) {
+            val rowProfiles = if(members.size <= 5) members.size else 5
+            for(i in 0 .. rowProfiles) {
                 Image(
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(50.dp)
                         .clickable( onClick = { showDialog = true } ),
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = members[i].avatar),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -147,27 +177,34 @@ fun MembersBar(members: List<User>) {
 }
 
 @Composable
-fun PostsList(posts: List<Post>) {
+fun PostsList(posts: List<Post>, onClick: (Post) -> Unit) {
     SectionCard("Atividades", false) {
         if(posts.isEmpty()) {
             Text("O grupo ainda não possui pastagens.")
         } else {
+            var index = 0
             LazyColumn {
-                items(posts, { it.created }) { post -> GroupPost(post); HorizontalDivider() }
+                items(posts, { it.created }) { post ->
+                    GroupPost(post,{ onClick(post) } )
+                    HorizontalDivider()
+                    Spacer(Modifier.size(10.dp))
+                }
             }
         }
     }
 }
 
 @Composable
-fun GroupPost(post: Post) {
-    Row(Modifier.padding(bottom = 10.dp)) {
+fun GroupPost(post: Post, onClick: () -> Unit) {
+    Row(Modifier
+        .padding(bottom = 10.dp)
+        .clickable( onClick = { onClick() } )
+    ) {
         Image(
             modifier = Modifier
                 .clip(CircleShape)
-                .size(50.dp)
-                .clickable( onClick = { Log.i("USER", "Clicou em ${post.user.username}!") } ),
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+                .size(50.dp),
+            painter = painterResource(id = post.user.avatar),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -175,7 +212,7 @@ fun GroupPost(post: Post) {
         Column {
             Row {
                 Text(post.user.username, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.size(4.dp))
+                Spacer(Modifier.width(10.dp))
                 Text(formatDate(post.created), style = MaterialTheme.typography.bodyMedium, color = GrayDescriptionColor)
             }
             Text(post.content, style = MaterialTheme.typography.bodyMedium)
@@ -199,6 +236,6 @@ fun PostLink(title: String, onClick: () -> Unit) {
 }
 
 fun formatDate(date: LocalDateTime): String {
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/mm/YYYY, HH:mm")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/mm/YYYY")
     return date.format(dateFormatter)
 }
