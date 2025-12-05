@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ifpe.pdm.saveandwin.model.GroupVisibility
 import com.ifpe.pdm.saveandwin.ui.theme.DataStringField
 import com.ifpe.pdm.saveandwin.ui.theme.DefaultButton
@@ -47,7 +48,7 @@ import com.ifpe.pdm.saveandwin.ui.theme.MintGreen
 import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 
 @Composable
-fun CreateGroupPage(viewModel: MainViewModel) {
+fun CreateGroupPage(viewModel: MainViewModel, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +59,7 @@ fun CreateGroupPage(viewModel: MainViewModel) {
         var name by rememberSaveable { mutableStateOf("") }
         var description by rememberSaveable { mutableStateOf("") }
         var visibility by rememberSaveable { mutableStateOf(GroupVisibility.PUBLIC) }
-        var scoreOptions: MutableList<String> = mutableListOf()
+        // var scoreOptions: MutableList<String> = mutableListOf()
 
         ImageInput()
         Spacer(Modifier.size(5.dp))
@@ -66,13 +67,13 @@ fun CreateGroupPage(viewModel: MainViewModel) {
         DataStringField(value = name, text = "Nome do Grupo") { name = it }
         Spacer(Modifier.size(5.dp))
 
-        DataStringField(Modifier.height(170.dp), description, "Nome do Grupo") { name = it }
+        DataStringField(Modifier.height(170.dp), description, "Descrição do Grupo") { description = it }
         Spacer(Modifier.size(20.dp))
 
         VisibilityOptionsList(visibility) { visibility = it }
         Spacer(Modifier.size(8.dp))
 
-        DefaultButton("Criar Grupo", onClick = {  })
+        DefaultButton("Criar Grupo", onClick = { navController.popBackStack() })
     }
 }
 

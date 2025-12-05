@@ -35,6 +35,7 @@ import com.ifpe.pdm.saveandwin.R
 import com.ifpe.pdm.saveandwin.model.User
 import com.ifpe.pdm.saveandwin.ui.theme.BlackButton
 import com.ifpe.pdm.saveandwin.ui.theme.DefaultButton
+import com.ifpe.pdm.saveandwin.ui.theme.DialogButton
 import com.ifpe.pdm.saveandwin.ui.theme.GrayDescriptionColor
 import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
 
@@ -72,9 +73,9 @@ fun EnterGroupDialog(
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    DefaultButton("Cancelar", color = BlackButton, onClick = { onDismiss() })
-                    DefaultButton("Confirmar", color = GreenSW, onClick = { onConfirm() })
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    DialogButton("Cancelar", color = BlackButton, onClick = { onDismiss() })
+                    DialogButton("Confirmar", color = GreenSW, onClick = { onConfirm() })
                 }
             }
         }

@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardDefaults.elevatedCardColors
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,7 +46,6 @@ import com.ifpe.pdm.saveandwin.ui.theme.GrayDescriptionColor
 import com.ifpe.pdm.saveandwin.ui.theme.GreenSW
 import com.ifpe.pdm.saveandwin.ui.theme.LightGrayField
 import com.ifpe.pdm.saveandwin.ui.theme.LightGreenBackground
-import com.ifpe.pdm.saveandwin.viewmodel.GroupPageViewModel
 import com.ifpe.pdm.saveandwin.viewmodel.MainViewModel
 import kotlin.collections.remove
 
@@ -51,58 +53,53 @@ import kotlin.collections.remove
 fun UserGroupsPage(
     modifier: Modifier = Modifier.Companion,
     navController: NavController,
-    viewModel: GroupPageViewModel
+    viewModel: MainViewModel
 ) {
-    val groups = viewModel.groups
+    val groups = viewModel.userGroups
 
-    Column(
-        modifier = modifier.fillMaxSize()
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
             .background(LightGreenBackground)
             .padding(horizontal = 20.dp)
             .padding(top = 10.dp),
         horizontalAlignment = CenterHorizontally,
     ) {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-        ) {
-            item {
-                Text(
-                    text = "Seus Grupos",
-                    modifier = Modifier.fillMaxWidth(),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start,
-                    fontSize = 30.sp
-                )
-                Spacer(Modifier.size(20.dp))
-            }
+        item {
+            Text(
+                text = "Seus Grupos",
+                modifier = Modifier.fillMaxWidth(),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                fontSize = 30.sp
+            )
+            Spacer(Modifier.size(20.dp))
+        }
 
-            items(groups, key = { it.name }) { group ->
-                GroupCard(
-                    group = group,
-                    onClick = {
-                        viewModel.selectedGroup = group
-                        Log.i("GRUPO", "Grupo selecionado ${group.name}")
-                        navController.navigate(Route.GroupPage) {
-                            navController.graph.startDestinationRoute?.let {
-                                popUpTo(it) {
-                                    saveState = true
-                                }
-                                restoreState = true
+        items(groups, key = { it.name }) { group ->
+            GroupCard(
+                group = group,
+                onClick = {
+                    viewModel.selectedGroup = group
+                    Log.i("GRUPO", "Grupo selecionado ${group.name}")
+                    navController.navigate(Route.GroupPage) {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) {
+                                saveState = true
                             }
-                            launchSingleTop = true
+                            restoreState = true
                         }
-                    })
-                Spacer(Modifier.size(15.dp))
-            }
+                        launchSingleTop = true
+                    }
+                })
+            Spacer(Modifier.size(15.dp))
         }
     }
+
 }
 
 @Composable
 fun GroupCard(group: Group, onClick: () -> Unit) {
-    val titleSize = 18.sp
-    val contentSize = 14.sp
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -129,21 +126,21 @@ fun GroupCard(group: Group, onClick: () -> Unit) {
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-           Text(
-               text = group.name,
-               fontWeight = FontWeight.Bold,
-               fontSize = titleSize
-           )
+            Text(
+                text = group.name,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium
+            )
             Text(
                 text = "${group.members.size} integrantes",
                 fontWeight = FontWeight.Medium,
-                fontSize = contentSize
+                style = MaterialTheme.typography.bodyMedium
             )
             group.description?.let {
                 Text(
                     text = it,
-                    fontSize = contentSize,
-                    color = GrayDescriptionColor
+                    color = GrayDescriptionColor,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

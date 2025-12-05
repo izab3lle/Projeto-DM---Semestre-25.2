@@ -51,6 +51,7 @@ fun GroupMembersDialog(
     onDismiss: () -> Unit,
     members: List<User>
 ) {
+    var index = 0;
     Dialog(onDismissRequest = { onDismiss() } ) {
         Surface(shape = RoundedCornerShape(16.dp)) {
             Column(modifier = Modifier.padding(20.dp)) {
@@ -74,8 +75,7 @@ fun GroupMembersDialog(
                                 modifier = Modifier
                                     .size(40.dp)
                                     .clip(CircleShape),
-                                    //.clickable( onClick = { showDialog = true } )
-                                painter = painterResource(id = R.drawable.ic_launcher_background),
+                                painter = painterResource(id = member.avatar),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop
                             )
