@@ -114,8 +114,26 @@ fun NavDrawer(
                         label = { Text("Notificações") },
                         selected = false,
                         icon = { Icon(Icons.Default.Notifications, contentDescription = null, tint = DarkGreen)},
-                        onClick = { /* Handle click */ },
-                        badge = { Text("20") },
+                        onClick = {
+                            scope.launch {
+                                if (drawerState.isClosed) {
+                                    drawerState.open()
+                                } else {
+                                    drawerState.close()
+                                }
+                            }
+
+                            navController.navigate(Route.Notifications) {
+                                navController.graph.startDestinationRoute?.let {
+                                    popUpTo(it) {
+                                        saveState = true
+                                    }
+                                    restoreState = true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        badge = { Text("5") },
                     )
                 }
             }
