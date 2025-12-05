@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,6 +65,13 @@ fun LoginPage(modifier: Modifier = Modifier) {
     var password by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
 
+    // fade in do logo
+    var visible by remember { mutableStateOf(true) }
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (visible) 1.0f else 0f,
+        label = "alpha"
+    )
+
     Column(modifier = Modifier.fillMaxSize().background(MintGreen)) {
         Row(
             modifier = Modifier
@@ -81,7 +91,9 @@ fun LoginPage(modifier: Modifier = Modifier) {
             Image(
                 painter = painterResource(id = R.drawable.money_logo),
                 contentDescription = "Logo Save & Win",
-                modifier = Modifier.size(140.dp)
+                modifier = Modifier
+                    .size(140.dp)
+                    .graphicsLayer { alpha = animatedAlpha }
             )
         }
 
